@@ -210,3 +210,10 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+
+# Angular Projet
+src/WebGroup/wwwwroot/app
+src/WebGroup/wwwwroot/css
+src/WebGroup/wwwwroot/fonts
+src/WebGroup/wwwwroot/scripts
