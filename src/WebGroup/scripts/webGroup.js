@@ -3,61 +3,41 @@
 
     angular.module('webGroup', [
         'chat',
+        'socket',
+        'user',
+        'technical',
         'ngRoute',
-        'ngWebSocket'
+        'pascalprecht.translate',
+        'ngSanitize'
     ])
-    .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.
-          when('/chat', {
-              templateUrl: 'views/chat.html',
-              controller: 'ChatController'
-          }).
-          otherwise({
-              redirectTo: '/chat'
-          });
+    .config(['$routeProvider', '$translateProvider', '$translatePartialLoaderProvider', '$httpProvider',
+        function ($routeProvider, $translateProvider, $translatePartialLoaderProvider, $httpProvider) {
+            $routeProvider.
+              when('/chat', {
+                  templateUrl: 'views/chat.html',
+                  controller: 'ChatController'
+              }).
+              when('/login', {
+                  templateUrl: 'views/login.html',
+                  controller: 'LoginController'
+              }).
+              otherwise({
+                  redirectTo: '/login'
+              });
 
-    }])
-    .controller('MainController', ['$scope', function ($scope) {
-    }])
-    .factory('SocketService', ['$websocket', function ($websocket) {
-        var dataStream = $websocket('ws://localhost:54699/websocket');
+            $httpProvider.interceptors.push('SiteHttpInterceptor');
 
-        var collection = [];
+            $translateProvider.useSanitizeValueStrategy('sanitize');
 
-        var callbacks = [];
-
-        dataStream.onMessage(function (message) {
-            var data = JSON.parse(message.data);
-
-            callbacks.forEach(function (callback) {
-                callback.callback(data);
+            $translatePartialLoaderProvider.addPart('common');
+            $translateProvider.useLoader('$translatePartialLoader', {
+                urlTemplate: '/localize/{part}-{lang}.json'
             });
-        });
 
-        var methods = {
-            get: function () {
-                dataStream.send(JSON.stringify({ action: 'get' }));
-            },
-            sendMessage: function (message) {
-                var data = {
-                    Action: 'sendMessage',
-                    Id: new Date().getTime(),
-                    Text: message
-                };
-
-                dataStream.send(JSON.stringify(data));
-
-                return data.id;
-            },
-            register: function (key, callback) {
-                callbacks.push({ key: key, callback: callback });
-            },
-            unregistered: function (key) {
-
-            }
-        };
-
-        return methods;
+            $translateProvider.preferredLanguage('en');
+        }])
+    .run(['$rootScope', function ($rootScope) {
+        $rootScope.connection = { count: 0 };
     }])
     ;
 })();
