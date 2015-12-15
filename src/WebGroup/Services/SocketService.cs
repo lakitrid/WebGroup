@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
@@ -30,7 +32,7 @@ namespace WebGroup.Services
             {
                 var token = CancellationToken.None;
                 var buffer = new ArraySegment<Byte>(new Byte[4096]);
-                var bufferOut= new ArraySegment<Byte>(new Byte[4096]);
+                var bufferOut = new ArraySegment<Byte>(new Byte[4096]);
 
                 // Below will wait for a request message.
                 var received = await socket.ReceiveAsync(buffer, token);
@@ -38,25 +40,71 @@ namespace WebGroup.Services
                 switch (received.MessageType)
                 {
                     case WebSocketMessageType.Text:
-                        var request = Encoding.UTF8.GetString(buffer.Array,
+                        string request = Encoding.UTF8.GetString(buffer.Array,
                                                               buffer.Offset,
                                                               buffer.Count);
-
-                        await this.Send(socket);
+                        await this.ManageMessage(request, socket);
                         break;
                 }
             }
-            
+
             this._connections.TryRemove(connectionId, out connection);
         }
 
-        private async Task Send(WebSocket socket)
+        private async Task ManageMessage(string message, WebSocket socket)
         {
-            var token = CancellationToken.None;
-            var type = WebSocketMessageType.Text;
-            var data = Encoding.UTF8.GetBytes("{ \"result\": \"toto\" }");
-            var buffer = new ArraySegment<Byte>(data);
-            await socket.SendAsync(buffer, type, true, token);
+            StringReader reader = new StringReader(message);
+
+            JsonSerializer serializer = JsonSerializer.Create();
+            Message data = serializer.Deserialize<Message>(new JsonTextReader(reader));
+
+            if (data != null)
+            {
+                switch (data.Action)
+                {
+                    case "sendMessage":
+                        this.ManageSendMessage(data, socket);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void ManageSendMessage(Message data, WebSocket socket)
+        {
+            data.Action = "confirmMessage";
+
+            this.Send(socket, data).Wait();
+
+            this._connections.Where(e => e.Value.Socket != socket).ToList().ForEach(e =>
+            {
+                data.Action = "sendMessage";
+                this.Send(e.Value.Socket, data).Wait();
+            });
+        }
+
+        private string ParseObject<T>(T data)
+        {
+            StringWriter writer = new StringWriter();
+            JsonSerializer serializer = JsonSerializer.Create();
+            serializer.Serialize(new JsonTextWriter(writer), data);
+
+            return writer.ToString();
+        }
+
+        private async Task Send(WebSocket socket, Message data)
+        {
+            if (socket.State == WebSocketState.Open)
+            {
+                string message = this.ParseObject(data);
+
+                var token = CancellationToken.None;
+                var type = WebSocketMessageType.Text;
+                var toSend = Encoding.UTF8.GetBytes(message);
+                var buffer = new ArraySegment<Byte>(toSend);
+                await socket.SendAsync(buffer, type, true, token);
+            }
         }
     }
 }

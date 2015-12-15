@@ -2,27 +2,58 @@
     'use strict';
 
     angular.module('webGroup', [
+        'chat',
         'ngRoute',
         'ngWebSocket'
     ])
-    .controller('MainController', ['$scope', 'SocketService', function ($scope, SocketService) {
-        $scope.Send = function () {
-            SocketService.get();
-        };
+    .config(['$routeProvider', function ($routeProvider) {
+        $routeProvider.
+          when('/chat', {
+              templateUrl: 'views/chat.html',
+              controller: 'ChatController'
+          }).
+          otherwise({
+              redirectTo: '/chat'
+          });
+
+    }])
+    .controller('MainController', ['$scope', function ($scope) {
     }])
     .factory('SocketService', ['$websocket', function ($websocket) {
         var dataStream = $websocket('ws://localhost:54699/websocket');
 
         var collection = [];
 
+        var callbacks = [];
+
         dataStream.onMessage(function (message) {
-            collection.push(JSON.parse(message.data));
+            var data = JSON.parse(message.data);
+
+            callbacks.forEach(function (callback) {
+                callback.callback(data);
+            });
         });
 
         var methods = {
-            collection: collection,
             get: function () {
                 dataStream.send(JSON.stringify({ action: 'get' }));
+            },
+            sendMessage: function (message) {
+                var data = {
+                    Action: 'sendMessage',
+                    Id: new Date().getTime(),
+                    Text: message
+                };
+
+                dataStream.send(JSON.stringify(data));
+
+                return data.id;
+            },
+            register: function (key, callback) {
+                callbacks.push({ key: key, callback: callback });
+            },
+            unregistered: function (key) {
+
             }
         };
 

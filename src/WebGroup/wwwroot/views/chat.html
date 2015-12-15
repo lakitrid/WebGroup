@@ -1,0 +1,13 @@
+﻿<div class="container-fluid">
+    <div class="col-xs-12" ng-repeat="message in messages">
+        <span>{{message.Text}}</span>
+    </div>
+    <div class="col-xs-12">
+        <div class="col-xs-10">
+            <input type="text" class="form-control" ng-model="toSend.Text" />
+        </div>
+        <div class="col-xs-2">
+            <button class="btn btn-success" ng-click="Send()">Send</button>
+        </div>
+    </div>
+</div>
