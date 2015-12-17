@@ -5,6 +5,7 @@
         'chat',
         'socket',
         'user',
+        'panel',
         'technical',
         'ngRoute',
         'pascalprecht.translate',
@@ -16,6 +17,10 @@
               when('/chat', {
                   templateUrl: 'views/chat.html',
                   controller: 'ChatController'
+              }).
+              when('/panel', {
+                  templateUrl: 'views/panel.html',
+                  controller: 'PanelController'
               }).
               when('/login', {
                   templateUrl: 'views/login.html',

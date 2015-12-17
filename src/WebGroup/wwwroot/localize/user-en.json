@@ -2,5 +2,6 @@
   "CONNECTION_TITLE": "Login",
   "LOGIN_FIELD": "User login",
   "PASSWORD_FIELD": "Password",
-  "LOGIN_BUTTON": "Connection"
+  "LOGIN_BUTTON": "Connection",
+  "LOGIN_ERROR":  "Incorrect user login or password !"
 }

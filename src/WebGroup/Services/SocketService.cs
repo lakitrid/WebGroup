@@ -43,7 +43,7 @@ namespace WebGroup.Services
                         string request = Encoding.UTF8.GetString(buffer.Array,
                                                               buffer.Offset,
                                                               buffer.Count);
-                        await this.ManageMessage(request, socket);
+                        this.ManageMessage(request, socket);
                         break;
                 }
             }
@@ -51,7 +51,7 @@ namespace WebGroup.Services
             this._connections.TryRemove(connectionId, out connection);
         }
 
-        private async Task ManageMessage(string message, WebSocket socket)
+        private void ManageMessage(string message, WebSocket socket)
         {
             StringReader reader = new StringReader(message);
 

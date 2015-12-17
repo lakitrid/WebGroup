@@ -11,6 +11,11 @@ using System.Net.WebSockets;
 using WebGroup.Services;
 using Microsoft.AspNet.StaticFiles;
 using Microsoft.AspNet.WebSockets.Server;
+using WebGroup.Models;
+using Microsoft.AspNet.Identity;
+using WebGroup.DataAccess;
+using Microsoft.Data.Entity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace WebGroup
 {
@@ -31,7 +36,17 @@ namespace WebGroup
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<SocketService>();
-            // Add framework services.
+            services.AddTransient<UserService>();
+            
+            services.AddEntityFramework().AddSqlServer().AddDbContext<WebGroupDbContext>(options =>
+                {
+                    options.UseSqlServer(Configuration["Database:connectionString"]);
+                });
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<WebGroupDbContext>()
+                .AddDefaultTokenProviders();
+
             services.AddMvc();
         }
 
@@ -63,6 +78,7 @@ namespace WebGroup
                 }
             });
 
+            app.UseIdentity();
             app.UseMvc();
         }
 

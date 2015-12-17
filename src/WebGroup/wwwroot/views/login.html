@@ -1,14 +1,14 @@
 ﻿<div class="container-fluid">
-    <div class="panel panel-default">
+    <div class="panel panel-default login">
         <div class="panel-heading">
-            <h3 translate="CONNECTION_TITLE"></h3>
+            <h4 translate="CONNECTION_TITLE"></h4>
         </div>
         <div class="panel-body">
             <form class="form-horizontal" name="loginForm">
                 <div class="form-group" ng-class="{'has-error' : loginForm.login.$invalid && (loginForm.$submitted || loginForm.login.$touched)}">
                     <label class="col-xs-12" translate="LOGIN_FIELD"></label>
                     <div class="col-xs-12">
-                        <input type="text" ng-model="user.login" class="form-control" required />
+                        <input type="text" ng-model="user.login" name="login" class="form-control" required />
                     </div>
                 </div>
                 <div class="form-group" ng-class="{'has-error' : loginForm.password.$invalid && (loginForm.$submitted || loginForm.password.$touched)}">
@@ -18,10 +18,17 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-default pull-right" ng-click="Login()">
-                        <i></i>
-                        <span translate="LOGIN_BUTTON"></span>
-                    </button>
+                    <div class="col-xs-12">
+                        <div class="alert alert-danger alert-dissmisible" translate="LOGIN_ERROR" ng-if="hasError"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <button class="btn btn-success" ng-click="Login()">
+                            <i></i>
+                            <span translate="LOGIN_BUTTON"></span>
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
