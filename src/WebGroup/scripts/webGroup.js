@@ -7,6 +7,7 @@
         'user',
         'panel',
         'technical',
+        'common',
         'ngRoute',
         'pascalprecht.translate',
         'ngSanitize'
@@ -16,15 +17,18 @@
             $routeProvider.
               when('/chat', {
                   templateUrl: 'views/chat.html',
-                  controller: 'ChatController'
+                  controller: 'ChatController',
+                  areas: { header: 'simple', leftMenu: 'channels', footer: 'simple' }
               }).
               when('/panel', {
                   templateUrl: 'views/panel.html',
-                  controller: 'PanelController'
+                  controller: 'PanelController',
+                  areas: { header: 'simple', leftMenu: 'channels', footer: 'simple' }
               }).
               when('/login', {
                   templateUrl: 'views/login.html',
-                  controller: 'LoginController'
+                  controller: 'LoginController',
+                  areas: { header: 'logo', leftMenu: 'none', footer: 'simple' }
               }).
               otherwise({
                   redirectTo: '/login'
@@ -41,8 +45,45 @@
 
             $translateProvider.preferredLanguage('en');
         }])
-    .run(['$rootScope', function ($rootScope) {
-        $rootScope.connection = { count: 0 };
+    .run(['$rootScope', '$route', 'UserService', '$location',
+        function ($rootScope, $route, UserService, $location) {
+            $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+                $rootScope.areas = $route.current.areas;
+
+                UserService.checkAuth().then(function (isAuth) {
+                    if ($route.current.$$route.originalPath !== '/login' && isAuth == false) {
+                        $location.path('/login');
+                    } else if ($route.current.$$route.originalPath === '/login' && isAuth == true) {
+                        $location.path('/panel');
+                    }
+                });
+            });
+
+            $rootScope.connection = { count: 0 };
+        }])
+    .directive('siteHeader', [function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: '/views/siteHeader.html',
+            controller: 'SiteHeaderController'
+        };
+    }])
+    .directive('leftMenu', [function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: '/views/leftMenu.html',
+            controller: 'LeftMenuController'
+        };
+    }])
+    .directive('siteFooter', [function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: '/views/siteFooter.html',
+            controller: 'SiteFooterController'
+        };
     }])
     ;
 })();

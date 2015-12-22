@@ -1,0 +1,8 @@
+﻿.site-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 3em;
+    background-color: #3B8DE4;
+    width: 100%;
+}

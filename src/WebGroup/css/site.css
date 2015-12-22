@@ -1,4 +1,31 @@
-﻿/* Login page */
+﻿/* Main body */
+
+.body {
+    overflow: hidden;
+}
+
+.main-body {
+    position: fixed;
+    top: 3em;
+    left: 20%;
+    height: calc(100% -6em);
+    width: 80%;
+}
+
+.main-body-full {
+    position: fixed;
+    top: 3em;
+    height: calc(100% -6em);
+    width: 100%;
+}
+
+.site-view {
+    position: static;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Login page */
 
 .login {
     margin-left: 50%;
@@ -20,6 +47,7 @@
         //width: 80%;
     }
 }
+
 /* Spinner */
 .spinner {
     position: fixed;

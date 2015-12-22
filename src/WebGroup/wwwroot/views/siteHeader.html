@@ -1,0 +1,6 @@
+﻿<div ng-if="display" class="site-header">
+    <div ng-if="areas.header === 'simple'">
+        <span>{{UserService.user.Name}}</span>
+        <i class="fa fa-stop" ng-if="UserService.isAuth" ng-click="UserService.logout()"></i>
+    </div>
+</div>

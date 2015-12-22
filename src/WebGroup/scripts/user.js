@@ -30,5 +30,39 @@
             }
         };
     }])
+    .factory('UserService', ['$http', '$q', '$location', function ($http, $q, $location) {
+        var isAuth = false;
+
+        var user = {}
+
+        return {
+            isAuth: isAuth,
+            user: user,
+            checkAuth: function () {
+                var deferred = $q.defer();
+
+                $http.get('/services/user/isAuth').then(function (success) {
+                    if (success.status == 200) {
+                        isAuth = true;
+                    } else {
+                        isAuth = false;
+                    }
+                    deferred.resolve(isAuth);
+                }, function (error) {
+                    isAuth = false;
+                    deferred.resolve(isAuth);
+                });
+
+                return deferred.promise;
+            },
+            logout: function () {
+                $http.get('/services/user/logout').then(function () {
+                    isAuth = false;
+                    user = {};
+                    $location.path('/Login');
+                });
+            }
+        }
+    }])
     ;
 })();

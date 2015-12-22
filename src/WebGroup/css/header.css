@@ -1,0 +1,8 @@
+﻿.site-header {
+    position: fixed;
+    height: 3em;
+    width: 100%;
+    background-color: #3B8DE4;
+    top: 0;
+    left: 0;
+}
