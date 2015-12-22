@@ -54,6 +54,7 @@
                     if ($route.current.$$route.originalPath !== '/login' && isAuth == false) {
                         $location.path('/login');
                     } else if ($route.current.$$route.originalPath === '/login' && isAuth == true) {
+                        UserService.loadUser();
                         $location.path('/panel');
                     }
                 });

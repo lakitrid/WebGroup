@@ -8,7 +8,8 @@
     .config(['$translatePartialLoaderProvider', function ($translatePartialLoaderProvider) {
         $translatePartialLoaderProvider.addPart('user');
     }])
-    .controller("LoginController", ['$scope', '$http', '$location', function ($scope, $http, $location) {
+    .controller("LoginController", ['$scope', '$http', '$location', 'UserService',
+        function ($scope, $http, $location, UserService) {
         $scope.user = {};
 
         $scope.hasError = false;
@@ -19,6 +20,7 @@
             if ($scope.loginForm.$valid) {
                 $http.post('services/user/login', $scope.user).then(function (success) {
                     if (success.status == 200) {
+                        UserService.loadUser();
                         $location.path('/panel');
                     } else {
                         $scope.hasError = true;
@@ -60,6 +62,11 @@
                     isAuth = false;
                     user = {};
                     $location.path('/Login');
+                });
+            },
+            loadUser: function () {
+                $http.get('services/user').then(function (success) {
+                    user = success.data;
                 });
             }
         }

@@ -57,8 +57,7 @@ namespace WebGroup
             loggerFactory.AddDebug();
 
             app.UseIISPlatformHandler();
-
-            app.UseDefaultFiles(new DefaultFilesOptions() { DefaultFileNames = new[] { "index.html" } });
+            
             app.UseStaticFiles();
 
             app.UseWebSockets();
@@ -79,7 +78,10 @@ namespace WebGroup
             });
 
             app.UseIdentity();
-            app.UseMvc();
+#if DEBUG
+            app.UseDeveloperExceptionPage();
+#endif
+            app.UseMvcWithDefaultRoute();
         }
 
         // Entry point for the application.

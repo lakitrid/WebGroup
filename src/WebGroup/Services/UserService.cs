@@ -21,6 +21,23 @@ namespace WebGroup.Services
             this._roleManager = roleManager;
         }
 
+        internal SiteUser GetCurrentUser(string name)
+        {
+            IdentityUser user = this._userManager.Users.Where(e => e.NormalizedUserName.Equals(name)).FirstOrDefault();
+            
+            SiteUser siteUser = null;
+
+            if(user != null)
+            {
+                siteUser = new SiteUser
+                {
+                    Name = user.UserName
+                };
+            }
+
+            return siteUser;
+        }
+
         internal async Task<bool> Authenticate(UserLogin user)
         {
 #if DEBUG

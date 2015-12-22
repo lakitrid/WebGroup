@@ -18,6 +18,12 @@ namespace WebGroup.Controllers
         [FromServices]
         public UserService UserService { get; set; }
 
+        [HttpGet]
+        public SiteUser GetUser()
+        {
+            return UserService.GetCurrentUser(this.User.Identity.Name);
+        }
+
         // POST services/user/login
         [HttpPost, Route("login"), AllowAnonymous]
         public async Task Post([FromBody]UserLogin user)

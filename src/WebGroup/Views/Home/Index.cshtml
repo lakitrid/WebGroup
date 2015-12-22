@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+}
+
+<!DOCTYPE html>
 <html ng-app="webGroup">
 <head>
     <meta charset="utf-8" />
@@ -32,7 +35,7 @@
 
     <left-menu></left-menu>
 
-    <div class="main-body" ng-class="{'main-body': areas.leftMenu !== 'none', 
+    <div class="main-body" ng-class="{'main-body': areas.leftMenu !== 'none',
          'main-body-full' : areas.leftMenu === 'none'}">
         <div class="site-view" ng-view>
         </div>
