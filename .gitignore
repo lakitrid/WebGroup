@@ -213,7 +213,7 @@ ModelManifest.xml
 
 
 # Angular Projet
-src/WebGroup/wwwwroot/app
-src/WebGroup/wwwwroot/css
-src/WebGroup/wwwwroot/fonts
-src/WebGroup/wwwwroot/scripts
+/src/WebGroup/wwwroot/app
+/src/WebGroup/wwwroot/css
+/src/WebGroup/wwwroot/fonts
+/src/WebGroup/wwwroot/scripts
